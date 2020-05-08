@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsf="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+<f:metadata>
+
+</f:metadata>
+
+<h:head>
+
+<h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
+
+<style type="text/css">
+	
+html {
+
+	background: #2c2c2c;
+}
+	
+#title {
+
+	margin: 0 auto;
+	width:80%;
+}
+
+#menu {
+
+	margin: 0 auto;
+	width: 80%;
+}
+
+.title {
+
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 70%;
+}
+
+table {
+
+	border-spacing: 16px;
+}
+
+table td {
+
+	text-align: center;
+}
+
+li.ui-tabmenuitem.ui-state-default.ui-state-active {
+
+   background: #5a5a5a;
+   border-style: none;
+}
+
+.tab .ui-tabmenuitem {
+
+	background: #373737;
+	font-family: Cairo Light;
+	border-style: none;
+}
+
+.tab .ui-tabmenuitem:hover {
+
+	background-image: linear-gradient(360deg, #6f6f6f, #373737);
+}
+
+.tab .ui-tabmenuitem:last-child {
+
+	float: right;
+	border-style: none;
+}
+
+.tab .ui-tabmenu-nav {
+
+	background: #252525;
+}
+
+#content {
+	
+	margin: 30px;
+	height: 50vh auto;
+	border: 1px solid red;
+}
+
+#content-button {
+
+	margin: 8% auto;
+	width: 80%;
+}
+
+input[type=submit] {
+
+	background-color: #575757;
+	color: #cecece;
+	font-family: "Cairo Bold", sans-serif;
+	font-size: 20px;
+	border-radius: 6px;
+	padding: 10px 32px;
+	border: 0px;
+}
+
+input[type=submit]:hover {
+
+	background-image: linear-gradient(360deg, #6f6f6f, #373737);
+	border: 1px solid #b5b5b5;
+}
+
+#content-upload {
+
+	vertical-align: top;
+	display: inline-block;
+	padding-top: 0.5%;
+	padding-bottom: 0.5%;
+	padding-left: 0.5%;
+	width:55%;
+}
+
+.upload .ui-fileupload-buttonbar {
+
+	background: #252525 !important;
+}
+
+.upload .ui-fileupload-content {
+
+	background: #b5b5b5;
+	height: calc(66vh - 200px);
+	overflow: auto;
+}
+
+.upload .ui-fileupload-choose {
+
+	background: #5a5a5a;
+	font-family: Cairo Light;
+	color: #cecece;
+}
+
+.upload .ui-icon {
+
+	background-color: #cecece;
+}
+
+.upload .ui-fileupload-choose:hover {
+
+	background-image: linear-gradient(360deg, #6f6f6f, #373737);
+	border: 1px solid #b5b5b5;
+}
+
+.upload .ui-fileupload-upload {
+
+	background: #5a5a5a;
+	font-family: Cairo Light;
+	color: #cecece;
+}
+
+.upload .ui-fileupload-upload:hover {
+
+	background-image: linear-gradient(360deg, #6f6f6f, #373737);
+	border: 1px solid #b5b5b5;
+}
+
+.upload .ui-fileupload-cancel {
+
+	background: #5a5a5a;
+	font-family: Cairo Light;
+	color: #cecece;
+}
+
+.upload .ui-fileupload-cancel:hover {
+
+	background-image: linear-gradient(360deg, #6f6f6f, #373737);
+	border: 1px solid #b5b5b5;
+}
+
+#content-dropdown {
+
+	font-family: Cairo;
+	font-size: 18px;
+	vertical-align: top;
+	display: inline-block;
+	padding-top: 0.5%;
+	padding-left: 0.5%;
+	padding-right: 0.5%;
+	padding-bottom: 0.5%;
+	width:10%;
+}
+
+#content-dropdown select {
+
+	font-size: 16px;
+	width: 100%;
+	background: #252525;
+	font-family: Cairo Light;
+	color: #cecece;
+}
+
+#content-dropdown option {
+
+	background: #252525;
+	font-family: Cairo Light;
+	color: #cecece;
+}
+
+#content-dropdown option:checked {
+
+	color:black;
+	background: #cecece;
+}
+
+#content-list {
+	
+	color: #cecece;
+	display: inline-block;
+	vertical-align: top;
+	width:28%;
+	padding-top: 0.5%;
+	padding-bottom: 0.5%;
+	padding-left: 2%;
+	padding-right: 0.5%;
+	font-family: Cairo;
+	font-size: 14px;
+	height: calc(72vh - 200px);
+	overflow: auto;
+}
+
+#content-list input[type=submit] {
+
+	background-color: #575757;
+	color: #cecece;
+	font-family: "Cairo Bold", sans-serif;
+	font-size: 20px;
+	border-radius: auto;
+	height: 4vh;
+	padding: 3px 12px;
+	border: 1px;
+}
+
+#content-list input[type=submit]:hover {
+
+	background-image: linear-gradient(360deg, #6f6f6f, #373737);
+	border: 0.5px solid #b5b5b5;
+}
+
+#footer {
+	
+	border: 1px solid #575757;
+	height: auto;
+	margin: 30px;
+	background: #575757;
+}
+
+#foot-top {
+
+	margin: 6px auto;
+	border-bottom: 1px solid #cecece;
+	width: 90%;
+	height: auto;
+	font-size: 18px;
+	color: #cecece;
+	font-family: Cairo;
+}
+
+#foot-bottom {
+
+	margin: 6px auto;
+	width: 90%;
+	height: auto;
+	color: #cecece;
+	font-family: Cairo Light;
+}
+
+</style>
+	
+</h:head>
+
+
+	<h:body >
+	
+		<DIV>
+			
+			<DIV id="title">
+				
+				<h:graphicImage class="title" library="images" name="fm_title.png"/>
+				
+			</DIV>
+			
+			<DIV id="menu">
+			
+				<h:form>
+				
+					<p:tabMenu activeIndex="#{param.i}" class="tab" style="border-style: outset;">
+					
+						<p:menuitem value="&#xA0; Public" outcome="main_menu" icon="pi pi-users" style="color:#cecece; text-shadow: -0px -0px;">
+							<f:param name="i" value="0" />
+						</p:menuitem>
+						<p:menuitem value="&#xA0; Private" outcome="main_menu" icon="pi pi-user" style="color:#cecece; text-shadow: -0px -0px;">
+							<f:param name="i" value="1" />
+						</p:menuitem>
+						<p:menuitem value="&#xA0; Help" outcome="main_menu" icon="pi pi-info-circle" style="color:#cecece; text-shadow: -0px -0px;">
+							<f:param name="i" value="2" />
+						</p:menuitem>
+						
+					</p:tabMenu>
+				
+				</h:form>
+				
+			</DIV>
+			
+			
+			<DIV id="content">
+			
+				<ui:fragment rendered="false">
+				
+					<DIV id="content-button">
+					
+						<h:commandButton value="View" style="width:30%; height:5vh; margin: 15px auto; display:block;">
+						
+						</h:commandButton>
+						
+						<br/>
+						
+						<h:commandButton value="Upload" style="width:30%; height:5vh; margin: 15px auto; display:block;">
+						
+						</h:commandButton>
+						
+					</DIV>
+			
+				</ui:fragment>
+				
+				<ui:fragment rendered="true">
+					
+					<DIV id="content-upload">
+							
+						<h:form>
+								
+							<p:fileUpload class="upload" listener="#{fileUpload.uploadMultipleFiles}" mode="advanced" multiple="true" />
+							
+						</h:form>
+							
+					</DIV>
+						
+					<DIV id="content-dropdown">
+						
+						<h:outputText value="Category:" style="color: #cecece;"/>
+						
+						<h:form>
+						
+						<h:selectOneMenu value="#{fileUpload.category}" onchange="submit()">
+							<f:selectItems value="#{fileUpload.generateCategories()}"/>
+						</h:selectOneMenu>
+						
+						</h:form>
+						
+					</DIV>
+					
+					<DIV id="content-list">
+						
+						<h:outputText value="#{fileUpload.showCurrentFolder()} Folder Content:" style="color: #cecece; font-size: 18px;"/>
+						
+						<table>
+						
+							<h:dataTable value="#{fileUpload.showList()}" var="item">
+							
+								<h:column>
+								
+									<h:graphicImage value="C:/Users/Deeder/Home-Workspace/FileManager/Storage/#{fileUpload.category}/#{item.getName()}" style="width: 166px;"/>
+								
+								</h:column>
+							
+								<h:column>
+								
+									<h:outputText type="text" value="#{item.getName()}" />
+								
+								</h:column>
+								
+								<h:column>
+								
+									<h:commandButton value="X"/>
+								
+								</h:column>
+							
+							</h:dataTable>
+						
+						</table>
+						
+					</DIV>
+				
+				</ui:fragment>
+			
+			</DIV>
+			
+			<DIV id="footer">
+			
+				<DIV id="foot-top">
+					<h:outputText value="File Manager"/>
+				</DIV>
+				
+				<DIV id="foot-bottom">
+					<h:outputText value="Author: Dustin Horricks"/>
+					<h:outputText value="Contact: 343-548-0141" style="float:right;"/>
+				</DIV>
+			
+			</DIV>
+			
+		</DIV>
+	
+	</h:body>
+
+</html>
