@@ -2,11 +2,11 @@ package com.filemanager.model;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
 @Named("itemDTO")
-@RequestScoped
+@SessionScoped
 public class ItemDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
