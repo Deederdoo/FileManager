@@ -8,6 +8,6 @@ public interface PublicUserDao {
 
 	public List<PicturesDTO> getPublicPictures();
 	
-	public void insertPublicPictures(List<PicturesDTO> pics);
+	public void insertPublicPictures(PicturesDTO pic);
 	
 }

@@ -26,7 +26,7 @@ public class PublicUserDaoImpl implements PublicUserDao, Serializable {
 	protected PreparedStatement readAllPublicPstmt;
 	protected PreparedStatement insertPublicPstmt;
 	
-	/*
+	/**
 	 * Build connection with the ConnectionManager Enum
 	 * and setup the prepared statements with sql queries
 	 * created above
@@ -52,7 +52,7 @@ public class PublicUserDaoImpl implements PublicUserDao, Serializable {
 		}
 	}
 	
-	/*
+	/**
 	 * Closes the Connection and all of the
 	 * statements
 	 * 
@@ -76,7 +76,7 @@ public class PublicUserDaoImpl implements PublicUserDao, Serializable {
 		}
 	}
 	
-	/*
+	/**
 	 * Fetch all Pictures of type public from the database
 	 * then return them as an arraylist
 	 * 
@@ -112,29 +112,24 @@ public class PublicUserDaoImpl implements PublicUserDao, Serializable {
 		return myPics;
 	}
 	
-	/*
+	/**
 	 * Insert/Upload picture byte String and other variables
 	 * to the database into the Pictures Table
 	 * 
 	 * @param List<PicturesDTO>
 	 * 
 	 * */
-	public void insertPublicPictures(List<PicturesDTO> pics) {
-		
-		List<PicturesDTO> tempPics = pics;
+	public void insertPublicPictures(PicturesDTO pic) {
 		
 		try {
-			
-			for(int i = 0; i < pics.size(); i++) {
 				
-				insertPublicPstmt.setString(1, tempPics.get(i).getType());
-				insertPublicPstmt.setString(2, tempPics.get(i).getByteData());
-				insertPublicPstmt.setString(3, tempPics.get(i).getName());
-				insertPublicPstmt.setString(4, tempPics.get(i).getInfo());
-				insertPublicPstmt.setInt(5, tempPics.get(i).getUserId());
+			insertPublicPstmt.setString(1, pic.getType());
+			insertPublicPstmt.setString(2, pic.getByteData());
+			insertPublicPstmt.setString(3, pic.getName());
+			insertPublicPstmt.setString(4, pic.getInfo());
+			insertPublicPstmt.setInt(5, pic.getUserId());
 				
-				insertPublicPstmt.executeUpdate();
-			}
+			insertPublicPstmt.executeUpdate();
 			
 		} catch (SQLException e) {
 			

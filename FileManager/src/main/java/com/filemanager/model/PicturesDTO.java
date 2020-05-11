@@ -1,12 +1,15 @@
 package com.filemanager.model;
 
+import java.io.Serializable;
+
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
 @Named("picturesDTO")
 @SessionScoped
-public class PicturesDTO {
-
+public class PicturesDTO implements Serializable{
+	private static final long serialVersionUID = 1L;
+	
 	private int id;
 	private String type;
 	private String byteData;
