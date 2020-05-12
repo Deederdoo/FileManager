@@ -13,7 +13,7 @@ CREATE TABLE `filemanagerdb`.`user` (
 CREATE TABLE `filemanagerdb`.`documents` (
   `DocID` INT NOT NULL AUTO_INCREMENT,
   `Type` VARCHAR(26) NOT NULL,
-  `ByteData` VARCHAR(666) NOT NULL,
+  `ByteData` LONGBLOB NOT NULL,
   `Name` VARCHAR(45) NOT NULL,
   `Info` VARCHAR(45) NULL,
   `UserID` INT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE `filemanagerdb`.`documents` (
 CREATE TABLE `filemanagerdb`.`pictures` (
   `PicID` INT NOT NULL AUTO_INCREMENT,
   `Type` VARCHAR(26) NOT NULL,
-  `ByteData` VARCHAR(666) NOT NULL,
+  `ByteData` LONGBLOB NOT NULL,
   `Name` VARCHAR(45) NOT NULL,
   `Info` VARCHAR(45) NULL,
   `UserID` INT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE `filemanagerdb`.`pictures` (
 CREATE TABLE `filemanagerdb`.`music` (
   `MusicID` INT NOT NULL AUTO_INCREMENT,
   `Type` VARCHAR(26) NOT NULL,
-  `ByteData` VARCHAR(666) NOT NULL,
+  `ByteData` LONGBLOB NOT NULL,
   `Name` VARCHAR(45) NOT NULL,
   `Info` VARCHAR(45) NULL,
   `UserID` INT NULL,
@@ -64,7 +64,7 @@ CREATE TABLE `filemanagerdb`.`music` (
 CREATE TABLE `filemanagerdb`.`movies` (
   `MovieID` INT NOT NULL AUTO_INCREMENT,
   `Type` VARCHAR(26) NOT NULL,
-  `ByteData` VARCHAR(666) NOT NULL,
+  `ByteData` LONGBLOB NOT NULL,
   `Name` VARCHAR(45) NOT NULL,
   `Info` VARCHAR(45) NULL,
   `UserID` INT NULL,
@@ -81,7 +81,7 @@ CREATE TABLE `filemanagerdb`.`movies` (
 CREATE TABLE `filemanagerdb`.`misc` (
   `MiscID` INT NOT NULL AUTO_INCREMENT,
   `Type` VARCHAR(26) NOT NULL,
-  `ByteData` VARCHAR(666) NOT NULL,
+  `ByteData` LONGBLOB NOT NULL,
   `Name` VARCHAR(45) NOT NULL,
   `Info` VARCHAR(45) NULL,
   `UserID` INT NULL,

@@ -18,8 +18,8 @@ public class PublicUserDaoImpl implements PublicUserDao, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private static final String READ_ALL_PUBLIC_PICTURES = "Select * From Pictures Where Type = 'Public';";
-	private static final String INSERT_PUBLIC_PICTURES = "Insert Into Pictures (type, bytedata, name, info, userid) "
-			+ "Values (?,?,?,?,?);";
+	private static final String INSERT_PUBLIC_PICTURES = "Insert Into Pictures (type, bytedata, name, info) "
+			+ "Values (?,?,?,?);";
 	
 	protected Connection conn;
 	
@@ -36,7 +36,7 @@ public class PublicUserDaoImpl implements PublicUserDao, Serializable {
 	 * 
 	 * */
 	@PostConstruct
-	protected void builConnectionAndStatements() {
+	protected void buildConnectionAndStatements() {
 		
 		try {
 			
@@ -122,14 +122,18 @@ public class PublicUserDaoImpl implements PublicUserDao, Serializable {
 	public void insertPublicPictures(PicturesDTO pic) {
 		
 		try {
+			
+			buildConnectionAndStatements();
+			
+			if(insertPublicPstmt != null) {
 				
-			insertPublicPstmt.setString(1, pic.getType());
-			insertPublicPstmt.setString(2, pic.getByteData());
-			insertPublicPstmt.setString(3, pic.getName());
-			insertPublicPstmt.setString(4, pic.getInfo());
-			insertPublicPstmt.setInt(5, pic.getUserId());
-				
-			insertPublicPstmt.executeUpdate();
+				insertPublicPstmt.setString(1, pic.getType());
+				insertPublicPstmt.setString(2, pic.getByteData());
+				insertPublicPstmt.setString(3, pic.getName());
+				insertPublicPstmt.setString(4, pic.getInfo());
+					
+				insertPublicPstmt.executeUpdate();
+			}
 			
 		} catch (SQLException e) {
 			

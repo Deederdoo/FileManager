@@ -1,9 +1,16 @@
 package com.filemanager.controller;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import javax.enterprise.context.SessionScoped;
@@ -15,7 +22,6 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.file.UploadedFile;
 
 import com.filemanager.dao.PublicUserDao;
-import com.filemanager.model.ItemDTO;
 import com.filemanager.model.PicturesDTO;
 
 @Named("publicFileUpload")
@@ -26,13 +32,15 @@ public class PublicFileUpload implements Serializable{
 	protected List<String> categories;
 	protected String category;
 	
-	private List<ItemDTO> myItems;
-	private ItemDTO item;
-	
 	@Inject
 	protected ExternalContext externalContext;
 	
 	protected PublicUserDao dao;
+	
+	protected List<PicturesDTO> pics;
+
+	@Inject
+	protected PicturesDTO pic;
 	
 	@Inject
 	public PublicFileUpload(PublicUserDao pubDao) {
@@ -45,31 +53,34 @@ public class PublicFileUpload implements Serializable{
 	 * adds the directory items to a String list
 	 * 
 	 * */
-	public List<ItemDTO> showList() {
-		
-		myItems = new ArrayList<>();
+	public List<PicturesDTO> showList() {
 		
 		if(category != null && !category.contains("Please Select")) {
 			
-			File folder = new File("C:\\Users\\Deeder\\Home-Workspace\\FileManager\\Storage\\" + category + "\\");
+			setPics(dao.getPublicPictures());
 			
-			int count = 1;
-			
-			for(File s : folder.listFiles()) {
+			for(int i = 0; i < pics.size(); i++) {
 				
-				item = new ItemDTO();
+				byte[] byteArray = pics.get(i).getByteData().getBytes();
 				
-				item.setId(count);
-				item.setImage(s.getPath());
-				item.setName(s.getName());
+				byteArray = Base64.getDecoder().decode(byteArray);
 				
-				myItems.add(item);
-				
-				count++;
+				try (FileOutputStream stream = new FileOutputStream("C:\\Users\\Deeder\\git\\DeederProjects\\FileManager\\FileManager\\src\\main\\webapp\\resources\\Temp\\" + pics.get(i).getName())) {
+					
+				    stream.write(byteArray);
+				    
+				} catch (FileNotFoundException e) {
+					
+					e.printStackTrace();
+					
+				} catch (IOException e) {
+					
+					e.printStackTrace();
+				}
 			}
 		}
 		
-		return myItems;
+		return pics;
 	}
 	
 	/**
@@ -135,9 +146,10 @@ public class PublicFileUpload implements Serializable{
 					//code here
 					PicturesDTO pic = new PicturesDTO();
 					byte[] picArray = upFile.getContent();
+					String myString = Base64.getEncoder().encodeToString(picArray);
 					
 					pic.setType("Public");
-					pic.setByteData(pic.toString());
+					pic.setByteData(myString);
 					pic.setName(upFile.getFileName());
 					pic.setInfo("");
 					
@@ -172,14 +184,14 @@ public class PublicFileUpload implements Serializable{
 				
 				}
 				
-				String realPath = "C:\\Users\\Deeder\\Home-Workspace\\FileManager\\Storage\\" + category + "\\";
-				
-				byte[] fContents = upFile.getContent();
-				String fName = realPath + upFile.getFileName();
-				FileOutputStream out = new FileOutputStream(fName);
-				
-				out.write(fContents);
-				out.close();
+//				String realPath = "C:\\Users\\Deeder\\Home-Workspace\\FileManager\\Storage\\" + category + "\\";
+//				
+//				byte[] fContents = upFile.getContent();
+//				String fName = realPath + upFile.getFileName();
+//				FileOutputStream out = new FileOutputStream(fName);
+//				
+//				out.write(fContents);
+//				out.close();
 				
 			}catch(Exception e) {
 				
@@ -188,22 +200,6 @@ public class PublicFileUpload implements Serializable{
 		}
 		
 		return "main_menu.xhtml?faces-redirect=true";
-	}
-
-	public List<ItemDTO> getMyItems() {
-		return myItems;
-	}
-
-	public void setMyItems(List<ItemDTO> myItems) {
-		this.myItems = myItems;
-	}
-
-	public ItemDTO getItem() {
-		return item;
-	}
-
-	public void setItem(ItemDTO item) {
-		this.item = item;
 	}
 
 	public List<String> getCategories() {
@@ -220,5 +216,21 @@ public class PublicFileUpload implements Serializable{
 
 	public void setCategory(String category) {
 		this.category = category;
+	}
+
+	public PicturesDTO getPic() {
+		return pic;
+	}
+
+	public void setPic(PicturesDTO pic) {
+		this.pic = pic;
+	}
+
+	public List<PicturesDTO> getPics() {
+		return pics;
+	}
+
+	public void setPics(List<PicturesDTO> pics) {
+		this.pics = pics;
 	}
 }

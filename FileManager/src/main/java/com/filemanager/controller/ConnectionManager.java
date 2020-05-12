@@ -20,8 +20,10 @@ public enum ConnectionManager {
 	ConnectionManager() {
 
 		try {
+			
 			Context ctx = new InitialContext();
 			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/filemanagerdb");
+			
 		} catch (NamingException e) {
 			e.printStackTrace();
 		}
@@ -31,9 +33,15 @@ public enum ConnectionManager {
 		
 		Connection conn = null;
 		connectionLock.lock();
+		
+		System.out.println("Looking for Connection...");
+		
 		try {
+			
 			conn = ds.getConnection();
+			
 		} finally {
+			
 			connectionLock.unlock();
 		}
 
