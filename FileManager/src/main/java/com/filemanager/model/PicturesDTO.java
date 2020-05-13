@@ -5,6 +5,8 @@ import java.io.Serializable;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
+import org.primefaces.model.StreamedContent;
+
 @Named("picturesDTO")
 @SessionScoped
 public class PicturesDTO implements Serializable{
@@ -13,6 +15,7 @@ public class PicturesDTO implements Serializable{
 	private int id;
 	private String type;
 	private String byteData;
+	private StreamedContent dynamicImage;
 	private String name;
 	private String info;
 	private int userId;
@@ -64,5 +67,13 @@ public class PicturesDTO implements Serializable{
 
 	public void setUserId(int userId) {
 		this.userId = userId;
+	}
+
+	public StreamedContent getDynamicImage() {
+		return dynamicImage;
+	}
+
+	public void setDynamicImage(StreamedContent dynamicImage) {
+		this.dynamicImage = dynamicImage;
 	}
 }

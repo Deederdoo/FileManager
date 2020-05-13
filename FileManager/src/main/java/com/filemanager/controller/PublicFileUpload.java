@@ -1,9 +1,11 @@
 package com.filemanager.controller;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -19,6 +21,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.file.UploadedFile;
 
 import com.filemanager.dao.PublicUserDao;
@@ -59,24 +63,21 @@ public class PublicFileUpload implements Serializable{
 			
 			setPics(dao.getPublicPictures());
 			
+			StreamedContent dynamicImage;
+			
 			for(int i = 0; i < pics.size(); i++) {
 				
 				byte[] byteArray = pics.get(i).getByteData().getBytes();
 				
 				byteArray = Base64.getDecoder().decode(byteArray);
 				
-				try (FileOutputStream stream = new FileOutputStream("C:\\Users\\Deeder\\git\\DeederProjects\\FileManager\\FileManager\\src\\main\\webapp\\resources\\Temp\\" + pics.get(i).getName())) {
-					
-				    stream.write(byteArray);
-				    
-				} catch (FileNotFoundException e) {
-					
-					e.printStackTrace();
-					
-				} catch (IOException e) {
-					
-					e.printStackTrace();
-				}
+				InputStream dbStream = new ByteArrayInputStream(byteArray);
+				
+				dynamicImage = new DefaultStreamedContent(dbStream);
+				
+				pics.get(i).setDynamicImage(dynamicImage);
+				
+				//CREATE A TEMP ARRAYLIST INSTEAD OF THIS ONE TO RETURN
 			}
 		}
 		
