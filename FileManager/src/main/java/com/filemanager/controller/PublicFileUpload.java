@@ -1,22 +1,18 @@
 package com.filemanager.controller;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseId;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -35,6 +31,9 @@ public class PublicFileUpload implements Serializable{
 	
 	protected List<String> categories;
 	protected String category;
+	
+	protected StreamedContent dynamicImage;
+	protected int dyID;
 	
 	@Inject
 	protected ExternalContext externalContext;
@@ -62,23 +61,6 @@ public class PublicFileUpload implements Serializable{
 		if(category != null && !category.contains("Please Select")) {
 			
 			setPics(dao.getPublicPictures());
-			
-			StreamedContent dynamicImage;
-			
-			for(int i = 0; i < pics.size(); i++) {
-				
-				byte[] byteArray = pics.get(i).getByteData().getBytes();
-				
-				byteArray = Base64.getDecoder().decode(byteArray);
-				
-				InputStream dbStream = new ByteArrayInputStream(byteArray);
-				
-				dynamicImage = new DefaultStreamedContent(dbStream);
-				
-				pics.get(i).setDynamicImage(dynamicImage);
-				
-				//CREATE A TEMP ARRAYLIST INSTEAD OF THIS ONE TO RETURN
-			}
 		}
 		
 		return pics;
@@ -202,6 +184,37 @@ public class PublicFileUpload implements Serializable{
 		
 		return "main_menu.xhtml?faces-redirect=true";
 	}
+	
+	/**
+	 * 
+	 *  http://javaonlineguide.net/2016/01/how-to-display-images-in-datatable-using-pgraphicimage-in-primefaces.html
+	 *
+	 */
+	public StreamedContent getDynamicImage() throws SQLException, IOException{
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		
+		if(context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
+			
+			return new DefaultStreamedContent();
+			
+		}else {
+			
+			String id = context.getExternalContext().getRequestParameterMap().get("pid");
+			
+			byte[] byteArray = dao.getPictureBytesByID(Integer.parseInt(id));
+			
+			byteArray = Base64.getDecoder().decode(byteArray);
+			
+			InputStream dbStream = new ByteArrayInputStream(byteArray);
+			
+			return new DefaultStreamedContent(dbStream);
+		}
+	}
+
+	public void setDynamicImage(StreamedContent dynamicImage) {
+		this.dynamicImage = dynamicImage;
+	}
 
 	public List<String> getCategories() {
 		return categories;
@@ -233,5 +246,13 @@ public class PublicFileUpload implements Serializable{
 
 	public void setPics(List<PicturesDTO> pics) {
 		this.pics = pics;
+	}
+
+	public int getDyID() {
+		return dyID;
+	}
+
+	public void setDyID(int dyID) {
+		this.dyID = dyID;
 	}
 }

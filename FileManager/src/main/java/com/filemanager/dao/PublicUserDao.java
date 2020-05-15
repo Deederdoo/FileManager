@@ -10,4 +10,5 @@ public interface PublicUserDao {
 	
 	public void insertPublicPictures(PicturesDTO pic);
 	
+	public byte[] getPictureBytesByID(int id);
 }

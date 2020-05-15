@@ -1,6 +1,7 @@
 package com.filemanager.dao;
 
 import java.io.Serializable;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,12 +18,14 @@ import com.filemanager.model.PicturesDTO;
 public class PublicUserDaoImpl implements PublicUserDao, Serializable {
 	private static final long serialVersionUID = 1L;
 
+	private static final String READ_PIC_BY_ID = "Select * From Pictures Where PicID = (?);";
 	private static final String READ_ALL_PUBLIC_PICTURES = "Select * From Pictures Where Type = 'Public';";
 	private static final String INSERT_PUBLIC_PICTURES = "Insert Into Pictures (type, bytedata, name, info) "
 			+ "Values (?,?,?,?);";
 	
 	protected Connection conn;
 	
+	protected PreparedStatement readPicByIDPstmt;
 	protected PreparedStatement readAllPublicPstmt;
 	protected PreparedStatement insertPublicPstmt;
 	
@@ -42,6 +45,7 @@ public class PublicUserDaoImpl implements PublicUserDao, Serializable {
 			
 			conn = ConnectionManager.INSTANCE.getConnection();
 			
+			readPicByIDPstmt = conn.prepareStatement(READ_PIC_BY_ID);
 			readAllPublicPstmt = conn.prepareStatement(READ_ALL_PUBLIC_PICTURES);
 			insertPublicPstmt = conn.prepareStatement(INSERT_PUBLIC_PICTURES);
 			
@@ -65,6 +69,7 @@ public class PublicUserDaoImpl implements PublicUserDao, Serializable {
 		
 		try {
 			
+			readPicByIDPstmt.close();
 			readAllPublicPstmt.close();
 			insertPublicPstmt.close();
 			
@@ -110,6 +115,37 @@ public class PublicUserDaoImpl implements PublicUserDao, Serializable {
 		}
 		
 		return myPics;
+	}
+	
+	/**
+	 *
+	 * @param id
+	 * 
+	 */
+	public byte[] getPictureBytesByID(int id) {
+		
+		byte[] picBytes = null;
+		Blob myBlob;
+		
+		try {
+			
+			readPicByIDPstmt.setInt(1, id);
+			ResultSet rs = readPicByIDPstmt.executeQuery();
+			
+			while(rs.next()) {
+				
+				myBlob = rs.getBlob("bytedata");
+				int blobLength = (int) myBlob.length();
+				picBytes = myBlob.getBytes(1, blobLength);
+				myBlob.free();
+			}
+			
+		}catch(Exception e) {
+			
+			e.printStackTrace();
+		}
+		
+		return picBytes;
 	}
 	
 	/**
