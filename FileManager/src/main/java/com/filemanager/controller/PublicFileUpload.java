@@ -22,6 +22,7 @@ import org.primefaces.model.StreamedContent;
 import org.primefaces.model.file.UploadedFile;
 
 import com.filemanager.dao.PublicUserDao;
+import com.filemanager.model.DocumentsDTO;
 import com.filemanager.model.PicturesDTO;
 
 @Named("publicFileUpload")
@@ -41,6 +42,7 @@ public class PublicFileUpload implements Serializable{
 	protected PublicUserDao dao;
 	
 	protected List<PicturesDTO> pics;
+	protected List<DocumentsDTO> docs;
 
 	@Inject
 	protected PicturesDTO pic;
@@ -56,14 +58,57 @@ public class PublicFileUpload implements Serializable{
 	 * adds the directory items to a String list
 	 * 
 	 * */
-	public List<PicturesDTO> showList() {
+	public List<?> showList() {
 		
 		if(category != null && !category.contains("Please Select")) {
 			
-			setPics(dao.getPublicPictures());
+			switch(category) {
+			
+			case "Pictures":
+				
+				if(pics != null) {
+					
+					pics.clear();
+				}
+				
+				setPics(dao.getPublicPictures());
+				
+				return pics;
+				
+			case "Documents":
+				
+				if(docs != null) {
+					
+					docs.clear();
+				}
+				
+				setDocs(dao.getPublicDocuments());
+				
+				return docs;
+				
+			case "Music":
+				
+				//code here
+				break;
+				
+			case "Videos":
+				
+				//code here
+				break;
+				
+			case "Misc":
+				
+				//code here
+				break;
+				
+			case "Please Select":
+				
+				//Send error message
+				break;
+			}
 		}
 		
-		return pics;
+		return null;
 	}
 	
 	/**
@@ -120,19 +165,16 @@ public class PublicFileUpload implements Serializable{
 			
 			try {
 				
-				//Create a switch case for 'Category'
-				
 				switch(category) {
 				
 				case "Pictures":
 					
-					//code here
 					PicturesDTO pic = new PicturesDTO();
 					byte[] picArray = upFile.getContent();
-					String myString = Base64.getEncoder().encodeToString(picArray);
+					String picString = Base64.getEncoder().encodeToString(picArray);
 					
 					pic.setType("Public");
-					pic.setByteData(myString);
+					pic.setByteData(picString);
 					pic.setName(upFile.getFileName());
 					pic.setInfo("");
 					
@@ -142,7 +184,17 @@ public class PublicFileUpload implements Serializable{
 					
 				case "Documents":
 					
-					//code here
+					DocumentsDTO doc = new DocumentsDTO();
+					byte[] docArray = upFile.getContent();
+					String docString = Base64.getEncoder().encodeToString(docArray);
+					
+					doc.setType("Public");
+					doc.setByteData(docString);
+					doc.setName(upFile.getFileName());
+					doc.setInfo("");
+
+					dao.insertPublicDocuments(doc);
+					
 					break;
 					
 				case "Music":
@@ -167,15 +219,6 @@ public class PublicFileUpload implements Serializable{
 				
 				}
 				
-//				String realPath = "C:\\Users\\Deeder\\Home-Workspace\\FileManager\\Storage\\" + category + "\\";
-//				
-//				byte[] fContents = upFile.getContent();
-//				String fName = realPath + upFile.getFileName();
-//				FileOutputStream out = new FileOutputStream(fName);
-//				
-//				out.write(fContents);
-//				out.close();
-				
 			}catch(Exception e) {
 				
 				e.printStackTrace();
@@ -196,20 +239,69 @@ public class PublicFileUpload implements Serializable{
 		
 		if(context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
 			
+			System.out.println("Render Response");
+			
 			return new DefaultStreamedContent();
 			
 		}else {
 			
-			String id = context.getExternalContext().getRequestParameterMap().get("pid");
+			String id = context.getExternalContext().getRequestParameterMap().get("pid");\
 			
-			byte[] byteArray = dao.getPictureBytesByID(Integer.parseInt(id));
+			switch(category) {
 			
-			byteArray = Base64.getDecoder().decode(byteArray);
-			
-			InputStream dbStream = new ByteArrayInputStream(byteArray);
-			
-			return new DefaultStreamedContent(dbStream);
+			case "Pictures":
+				
+				byte[] picByteArray = dao.getPictureBytesByID(Integer.parseInt(id));
+				
+				if(picByteArray != null) {
+					
+					picByteArray = Base64.getDecoder().decode(picByteArray);
+					
+					InputStream dbStream = new ByteArrayInputStream(picByteArray);
+					
+					return new DefaultStreamedContent(dbStream);
+				}
+				
+			case "Documents":
+				
+				byte[] docByteArray = dao.getDocumentBytesByID(Integer.parseInt(id));
+				
+				if(docByteArray != null) {
+					
+					docByteArray = Base64.getDecoder().decode(docByteArray);
+					
+					InputStream dbStream = new ByteArrayInputStream(docByteArray);
+					
+					return new DefaultStreamedContent(dbStream);
+				}
+				
+			case "Music":
+				
+				System.out.println("Music");
+				
+				break;
+				
+			case "Videos":
+				
+				System.out.println("Videos");
+				
+				break;
+				
+			case "Misc":
+				
+				System.out.println("Misc");
+				
+				break;
+				
+			case "Please Select":
+				
+				System.out.println("Please Select");
+				
+				break;
+			}
 		}
+		
+		return null;
 	}
 
 	public void setDynamicImage(StreamedContent dynamicImage) {
@@ -254,5 +346,13 @@ public class PublicFileUpload implements Serializable{
 
 	public void setDyID(int dyID) {
 		this.dyID = dyID;
+	}
+
+	public List<DocumentsDTO> getDocs() {
+		return docs;
+	}
+
+	public void setDocs(List<DocumentsDTO> docs) {
+		this.docs = docs;
 	}
 }
