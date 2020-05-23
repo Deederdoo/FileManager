@@ -19,25 +19,35 @@ import com.filemanager.model.PicturesDTO;
 public class PublicUserDaoImpl implements PublicUserDao, Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private static final String READ_PIC_BY_ID = "Select * From Pictures Where PicID = (?);";
-	private static final String READ_ALL_PUBLIC_PICTURES = "Select * From Pictures Where Type = 'Public';";
-	private static final String INSERT_PUBLIC_PICTURES = "Insert Into Pictures (type, bytedata, name, info) "
-			+ "Values (?,?,?,?);";
+	//Universal
+	private static final String READ_GLOBAL_ID = "Select g_id From Global Where type = (?) And name = (?);";
+	private static final String INSERT_PUBLIC_GLOBAL = "Insert Into Global (type, name) Values (?,?);";
 	
-	private static final String READ_DOC_BY_ID = "Select * From Documents Where DocID = (?);";
+	//Pictures
+	private static final String READ_PIC_BY_GID = "Select * From Pictures Where g_id = (?);";
+	private static final String READ_ALL_PUBLIC_PICTURES = "Select * From Pictures Where Type = 'Public';";
+	private static final String INSERT_PUBLIC_PICTURES = "Insert Into Pictures (type, bytedata, name, info, g_id) "
+			+ "Values (?,?,?,?,?);";
+	
+	//Documents
+	private static final String READ_DOC_BY_GID = "Select * From Documents Where g_id = (?);";
 	private static final String READ_ALL_PUBLIC_DOCUMENTS = "Select * From Documents Where Type = 'Public';";
-	private static final String INSERT_PUBLIC_DOCUMENTS = "Insert Into Documents (type, bytedata, name, info) "
-			+ "Values (?,?,?,?);";
+	private static final String INSERT_PUBLIC_DOCUMENTS = "Insert Into Documents (type, bytedata, name, info, g_id) "
+			+ "Values (?,?,?,?,?);";
 	
 	protected Connection conn;
 	
+	//Universal
+	protected PreparedStatement readGlobalIDPstmt;
+	protected PreparedStatement insertPublicGloPstmt;
+	
 	//Pictures
-	protected PreparedStatement readPicByIDPstmt;
+	protected PreparedStatement readPicByGIDPstmt;
 	protected PreparedStatement readAllPublicPicPstmt;
 	protected PreparedStatement insertPublicPicPstmt;
 	
 	//Documents
-	protected PreparedStatement readDocByIDPstmt;
+	protected PreparedStatement readDocByGIDPstmt;
 	protected PreparedStatement readAllPublicDocPstmt;
 	protected PreparedStatement insertPublicDocPstmt;
 	
@@ -58,13 +68,17 @@ public class PublicUserDaoImpl implements PublicUserDao, Serializable {
 			conn = ConnectionManager.INSTANCE.getConnection();
 			System.out.println("Connection Started...");
 			
+			//Universal
+			readGlobalIDPstmt = conn.prepareStatement(READ_GLOBAL_ID);
+			insertPublicGloPstmt = conn.prepareStatement(INSERT_PUBLIC_GLOBAL);
+			
 			//Pictures
-			readPicByIDPstmt = conn.prepareStatement(READ_PIC_BY_ID);
+			readPicByGIDPstmt = conn.prepareStatement(READ_PIC_BY_GID);
 			readAllPublicPicPstmt = conn.prepareStatement(READ_ALL_PUBLIC_PICTURES);
 			insertPublicPicPstmt = conn.prepareStatement(INSERT_PUBLIC_PICTURES);
 			
 			//Documents
-			readDocByIDPstmt = conn.prepareStatement(READ_DOC_BY_ID);
+			readDocByGIDPstmt = conn.prepareStatement(READ_DOC_BY_GID);
 			readAllPublicDocPstmt = conn.prepareStatement(READ_ALL_PUBLIC_DOCUMENTS);
 			insertPublicDocPstmt = conn.prepareStatement(INSERT_PUBLIC_DOCUMENTS);
 			
@@ -88,13 +102,17 @@ public class PublicUserDaoImpl implements PublicUserDao, Serializable {
 		
 		try {
 			
+			//Universal
+			readGlobalIDPstmt.close();
+			insertPublicGloPstmt.close();
+			
 			//Pictures
-			readPicByIDPstmt.close();
+			readPicByGIDPstmt.close();
 			readAllPublicPicPstmt.close();
 			insertPublicPicPstmt.close();
 			
 			//Documents
-			readDocByIDPstmt.close();
+			readDocByGIDPstmt.close();
 			readAllPublicDocPstmt.close();
 			insertPublicDocPstmt.close();
 			
@@ -132,6 +150,7 @@ public class PublicUserDaoImpl implements PublicUserDao, Serializable {
 				pic.setByteData(rs.getString("bytedata"));
 				pic.setName(rs.getString("name"));
 				pic.setInfo(rs.getString("info"));
+				pic.setgID(rs.getInt("g_id"));
 				myPics.add(pic);
 			}
 			
@@ -151,15 +170,15 @@ public class PublicUserDaoImpl implements PublicUserDao, Serializable {
 	 * @param id
 	 * 
 	 */
-	public byte[] getPictureBytesByID(int id) {
+	public byte[] getPictureBytesByGID(int id) {
 		
 		byte[] picBytes = null;
 		Blob myBlob;
 		
 		try {
 			
-			readPicByIDPstmt.setInt(1, id);
-			ResultSet rs = readPicByIDPstmt.executeQuery();
+			readPicByGIDPstmt.setInt(1, id);
+			ResultSet rs = readPicByGIDPstmt.executeQuery();
 			
 			while(rs.next()) {
 				
@@ -197,6 +216,7 @@ public class PublicUserDaoImpl implements PublicUserDao, Serializable {
 				insertPublicPicPstmt.setString(2, pic.getByteData());
 				insertPublicPicPstmt.setString(3, pic.getName());
 				insertPublicPicPstmt.setString(4, pic.getInfo());
+				insertPublicPicPstmt.setInt(5, pic.getgID());
 					
 				insertPublicPicPstmt.executeUpdate();
 			}
@@ -207,6 +227,48 @@ public class PublicUserDaoImpl implements PublicUserDao, Serializable {
 			System.out.println("Error inserting public pictures.");
 		}
 		
+	}
+	
+	/**
+	 * Insert global item into the Global table
+	 *
+	 * @param String type, String name
+	 *
+	 */
+	public int insertPublicGlobalAndReturnID(String type, String name) {
+		
+		try {
+			
+			buildConnectionAndStatements();
+			
+			if(insertPublicGloPstmt != null) {
+				
+				insertPublicGloPstmt.setString(1, type);
+				insertPublicGloPstmt.setString(2, name);
+				
+				insertPublicGloPstmt.executeUpdate();
+				
+				readGlobalIDPstmt.setString(1, type);
+				readGlobalIDPstmt.setString(2, name);
+				ResultSet rs = readGlobalIDPstmt.executeQuery();
+				
+				int tempInt = -2;
+				
+				while(rs.next()) {
+					
+					tempInt = rs.getInt("g_id");
+				}
+				
+				return tempInt;
+			}
+			
+		}catch(Exception e) {
+			
+			e.printStackTrace();
+			System.out.println("Error inserting public global.");
+		}
+		
+		return -1; //failed
 	}
 	
 	/**
@@ -233,6 +295,7 @@ public class PublicUserDaoImpl implements PublicUserDao, Serializable {
 				doc.setByteData(rs.getString("bytedata"));
 				doc.setName(rs.getString("name"));
 				doc.setInfo(rs.getString("info"));
+				doc.setgID(rs.getInt("g_id"));
 				myDocs.add(doc);
 			}
 			
@@ -253,15 +316,15 @@ public class PublicUserDaoImpl implements PublicUserDao, Serializable {
 	 * @param id
 	 *
 	 */
-	public byte[] getDocumentBytesByID(int id) {
+	public byte[] getDocumentBytesByGID(int id) {
 		
 		byte[] docBytes = null;
 		Blob myBlob;
 		
 		try {
 			
-			readDocByIDPstmt.setInt(1, id);
-			ResultSet rs = readDocByIDPstmt.executeQuery();
+			readDocByGIDPstmt.setInt(1, id);
+			ResultSet rs = readDocByGIDPstmt.executeQuery();
 			
 			while(rs.next()) {
 				
@@ -299,6 +362,7 @@ public class PublicUserDaoImpl implements PublicUserDao, Serializable {
 				insertPublicDocPstmt.setString(2, doc.getByteData());
 				insertPublicDocPstmt.setString(3, doc.getName());
 				insertPublicDocPstmt.setString(4, doc.getInfo());
+				insertPublicDocPstmt.setInt(5, doc.getgID());
 				
 				insertPublicDocPstmt.executeUpdate();
 			}

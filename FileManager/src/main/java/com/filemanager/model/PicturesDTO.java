@@ -16,6 +16,7 @@ public class PicturesDTO implements Serializable{
 	private String name;
 	private String info;
 	private int userId;
+	private int gID;
 	
 	
 	public int getId() {
@@ -64,5 +65,13 @@ public class PicturesDTO implements Serializable{
 
 	public void setUserId(int userId) {
 		this.userId = userId;
+	}
+
+	public int getgID() {
+		return gID;
+	}
+
+	public void setgID(int gID) {
+		this.gID = gID;
 	}
 }

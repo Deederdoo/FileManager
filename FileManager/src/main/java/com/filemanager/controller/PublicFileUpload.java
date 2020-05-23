@@ -173,10 +173,13 @@ public class PublicFileUpload implements Serializable{
 					byte[] picArray = upFile.getContent();
 					String picString = Base64.getEncoder().encodeToString(picArray);
 					
+					int gPicID = dao.insertPublicGlobalAndReturnID("Public", upFile.getFileName());
+					
 					pic.setType("Public");
 					pic.setByteData(picString);
 					pic.setName(upFile.getFileName());
 					pic.setInfo("");
+					pic.setgID(gPicID);
 					
 					dao.insertPublicPictures(pic);
 					
@@ -188,10 +191,13 @@ public class PublicFileUpload implements Serializable{
 					byte[] docArray = upFile.getContent();
 					String docString = Base64.getEncoder().encodeToString(docArray);
 					
+					int gDocID = dao.insertPublicGlobalAndReturnID("Public", upFile.getFileName());
+					
 					doc.setType("Public");
 					doc.setByteData(docString);
 					doc.setName(upFile.getFileName());
 					doc.setInfo("");
+					doc.setgID(gDocID);
 
 					dao.insertPublicDocuments(doc);
 					
@@ -233,25 +239,23 @@ public class PublicFileUpload implements Serializable{
 	 *  http://javaonlineguide.net/2016/01/how-to-display-images-in-datatable-using-pgraphicimage-in-primefaces.html
 	 *
 	 */
-	public StreamedContent getDynamicImage() throws SQLException, IOException{
+	public StreamedContent getDynamicImage() throws SQLException, IOException {
 		
 		FacesContext context = FacesContext.getCurrentInstance();
 		
 		if(context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
 			
-			System.out.println("Render Response");
-			
 			return new DefaultStreamedContent();
 			
 		}else {
 			
-			String id = context.getExternalContext().getRequestParameterMap().get("pid");\
+			String id = context.getExternalContext().getRequestParameterMap().get("pid");
 			
 			switch(category) {
 			
 			case "Pictures":
 				
-				byte[] picByteArray = dao.getPictureBytesByID(Integer.parseInt(id));
+				byte[] picByteArray = dao.getPictureBytesByGID(Integer.parseInt(id));
 				
 				if(picByteArray != null) {
 					
@@ -264,7 +268,7 @@ public class PublicFileUpload implements Serializable{
 				
 			case "Documents":
 				
-				byte[] docByteArray = dao.getDocumentBytesByID(Integer.parseInt(id));
+				byte[] docByteArray = dao.getDocumentBytesByGID(Integer.parseInt(id));
 				
 				if(docByteArray != null) {
 					
