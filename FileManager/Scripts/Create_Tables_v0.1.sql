@@ -88,25 +88,25 @@ CREATE TABLE `filemanagerdb`.`music` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
     
-CREATE TABLE `filemanagerdb`.`movies` (
-  `MovieID` INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE `filemanagerdb`.`videos` (
+  `VideoID` INT NOT NULL AUTO_INCREMENT,
   `Type` VARCHAR(26) NOT NULL,
   `ByteData` LONGBLOB NOT NULL,
   `Name` VARCHAR(45) NOT NULL,
   `Info` VARCHAR(45) NULL,
   `UserID` INT NULL,
   `g_id` INT NOT NULL,
-  PRIMARY KEY (`MovieID`),
-  UNIQUE INDEX `MovieID_UNIQUE` (`MovieID` ASC) VISIBLE,
+  PRIMARY KEY (`VideoID`),
+  UNIQUE INDEX `VideoID_UNIQUE` (`VideoID` ASC) VISIBLE,
   UNIQUE INDEX `Name_UNIQUE` (`Name` ASC) VISIBLE,
-  INDEX `UserID_idx_mov` (`UserID` ASC) VISIBLE,
-  INDEX `g_id_idx_mov` (`g_id` ASC) VISIBLE,
-  CONSTRAINT `UserID_Mov`
+  INDEX `UserID_idx_vid` (`UserID` ASC) VISIBLE,
+  INDEX `g_id_idx_vid` (`g_id` ASC) VISIBLE,
+  CONSTRAINT `UserID_Vid`
     FOREIGN KEY (`UserID`)
     REFERENCES `filemanagerdb`.`user` (`UserID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `g_id_mov`
+  CONSTRAINT `g_id_vid`
     FOREIGN KEY (`g_id`)
     REFERENCES `filemanagerdb`.`global` (`g_id`)
     ON DELETE NO ACTION
