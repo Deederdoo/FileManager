@@ -339,7 +339,7 @@ input[type=submit]:hover {
 							
 						<h:form>
 								
-							<p:fileUpload class="upload" listener="#{fileUpload.uploadMultipleFiles}" mode="advanced" multiple="true" />
+							<p:fileUpload class="upload" listener="#{publicFileUpload.uploadMultipleFiles}" mode="advanced" multiple="true" />
 							
 						</h:form>
 							
@@ -351,8 +351,8 @@ input[type=submit]:hover {
 						
 						<h:form>
 						
-						<h:selectOneMenu value="#{fileUpload.category}" onchange="submit()">
-							<f:selectItems value="#{fileUpload.generateCategories()}"/>
+						<h:selectOneMenu value="#{publicFileUpload.category}" onchange="submit()">
+							<f:selectItems value="#{publicFileUpload.generateCategories()}"/>
 						</h:selectOneMenu>
 						
 						</h:form>
@@ -361,15 +361,19 @@ input[type=submit]:hover {
 					
 					<DIV id="content-list">
 						
-						<h:outputText value="#{fileUpload.showCurrentFolder()} Folder Content:" style="color: #cecece; font-size: 18px;"/>
+						<h:outputText value="#{publicFileUpload.showCurrentFolder()} Folder Content:" style="color: #cecece; font-size: 18px;"/>
 						
 						<table>
 						
-							<h:dataTable value="#{fileUpload.showList()}" var="item">
+							<h:dataTable value="#{publicFileUpload.showList()}" var="item">
 							
 								<h:column>
 								
-									<h:graphicImage value="C:/Users/Deeder/Home-Workspace/FileManager/Storage/#{fileUpload.category}/#{item.getName()}" style="width: 166px;"/>
+									<p:graphicImage value="#{publicFileUpload.dynamicImage}" style="width: 166px;">
+										
+										<f:param name="pid" value="#{item.getgID()}"></f:param>
+										
+									</p:graphicImage>
 								
 								</h:column>
 							

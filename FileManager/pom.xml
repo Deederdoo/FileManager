@@ -22,14 +22,6 @@
   
   <dependencies>
   
-	<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
-	<dependency>
-	    <groupId>javax.servlet</groupId>
-	    <artifactId>javax.servlet-api</artifactId>
-	    <version>4.0.1</version>
-	    <scope>provided</scope>
-	</dependency>
-	
 	<!-- https://mvnrepository.com/artifact/javax.servlet/jstl -->
 	<dependency>
 	    <groupId>javax.servlet</groupId>
@@ -37,25 +29,26 @@
 	    <version>1.2</version>
 	</dependency>
 	
-	<!-- https://mvnrepository.com/artifact/com.sun.faces/jsf-api -->
+	<!-- https://mvnrepository.com/artifact/javax.el/el-api -->
 	<dependency>
-	    <groupId>com.sun.faces</groupId>
-	    <artifactId>jsf-api</artifactId>
-	    <version>2.2.20</version>
+	    <groupId>javax.el</groupId>
+	    <artifactId>el-api</artifactId>
+	    <version>2.2.1-b04</version>
 	</dependency>
 	
-	<!-- https://mvnrepository.com/artifact/com.sun.faces/jsf-impl -->
+	<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
 	<dependency>
-	    <groupId>com.sun.faces</groupId>
-	    <artifactId>jsf-impl</artifactId>
-	    <version>2.2.20</version>
+	    <groupId>javax.servlet</groupId>
+	    <artifactId>javax.servlet-api</artifactId>
+	    <version>4.0.0</version>
+	    <scope>provided</scope>
 	</dependency>
   	
-  	<!-- https://mvnrepository.com/artifact/org.jboss.weld.servlet/weld-servlet-core -->
+	<!-- https://mvnrepository.com/artifact/org.glassfish/javax.faces -->
 	<dependency>
-	    <groupId>org.jboss.weld.servlet</groupId>
-	    <artifactId>weld-servlet-core</artifactId>
-	    <version>3.1.4.Final</version>
+	    <groupId>org.glassfish</groupId>
+	    <artifactId>javax.faces</artifactId>
+	    <version>2.3.3</version>
 	</dependency>
   	
   	<!-- https://mvnrepository.com/artifact/org.primefaces/primefaces -->
@@ -64,7 +57,14 @@
 	    <artifactId>primefaces</artifactId>
 	    <version>8.0</version>
 	</dependency>
-  
+  	
+  	<!-- https://mvnrepository.com/artifact/org.jboss.weld.servlet/weld-servlet-shaded -->
+	<dependency>
+	    <groupId>org.jboss.weld.servlet</groupId>
+	    <artifactId>weld-servlet-shaded</artifactId>
+	    <version>3.0.1.Final</version>
+	</dependency>
+	
   </dependencies>
   
 </project>
