@@ -23,7 +23,10 @@ import org.primefaces.model.file.UploadedFile;
 
 import com.filemanager.dao.PublicUserDao;
 import com.filemanager.model.DocumentsDTO;
+import com.filemanager.model.MiscDTO;
+import com.filemanager.model.MusicDTO;
 import com.filemanager.model.PicturesDTO;
+import com.filemanager.model.VideosDTO;
 
 @Named("publicFileUpload")
 @SessionScoped
@@ -34,7 +37,6 @@ public class PublicFileUpload implements Serializable{
 	protected String category;
 	
 	protected StreamedContent dynamicImage;
-	protected int dyID;
 	
 	@Inject
 	protected ExternalContext externalContext;
@@ -43,6 +45,9 @@ public class PublicFileUpload implements Serializable{
 	
 	protected List<PicturesDTO> pics;
 	protected List<DocumentsDTO> docs;
+	protected List<MusicDTO> music;
+	protected List<VideosDTO> videos;
+	protected List<MiscDTO> misc;
 
 	@Inject
 	protected PicturesDTO pic;
@@ -88,18 +93,36 @@ public class PublicFileUpload implements Serializable{
 				
 			case "Music":
 				
-				//code here
-				break;
+				if(music != null) {
+					
+					music.clear();
+				}
+				
+				setMusic(dao.getPublicMusic());
+				
+				return music;
 				
 			case "Videos":
+
+				if(videos != null) {
+					
+					videos.clear();
+				}
 				
-				//code here
-				break;
+				setVideos(dao.getPublicVideos());
+				
+				return videos;
 				
 			case "Misc":
 				
-				//code here
-				break;
+				if(misc != null) {
+					
+					misc.clear();
+				}
+				
+				setMisc(dao.getPublicMisc());
+				
+				return misc;
 				
 			case "Please Select":
 				
@@ -205,17 +228,56 @@ public class PublicFileUpload implements Serializable{
 					
 				case "Music":
 					
-					//code here
+					MusicDTO music = new MusicDTO();
+					byte[] musicArray = upFile.getContent();
+					String musicString = Base64.getEncoder().encodeToString(musicArray);
+					
+					int gMusicID = dao.insertPublicGlobalAndReturnID("Public", upFile.getFileName());
+					
+					music.setType("Public");
+					music.setByteData(musicString);
+					music.setName(upFile.getFileName());
+					music.setInfo("");
+					music.setgID(gMusicID);
+
+					dao.insertPublicMusic(music);
+					
 					break;
 					
 				case "Videos":
 					
-					//code here
+					VideosDTO vids = new VideosDTO();
+					byte[] vidsArray = upFile.getContent();
+					String vidsString = Base64.getEncoder().encodeToString(vidsArray);
+					
+					int gVideoID = dao.insertPublicGlobalAndReturnID("Public", upFile.getFileName());
+					
+					vids.setType("Public");
+					vids.setByteData(vidsString);
+					vids.setName(upFile.getFileName());
+					vids.setInfo("");
+					vids.setgID(gVideoID);
+
+					dao.insertPublicVideos(vids);
+					
 					break;
 					
 				case "Misc":
 					
-					//code here
+					MiscDTO misc = new MiscDTO();
+					byte[] miscArray = upFile.getContent();
+					String miscString = Base64.getEncoder().encodeToString(miscArray);
+					
+					int gMiscID = dao.insertPublicGlobalAndReturnID("Public", upFile.getFileName());
+					
+					misc.setType("Public");
+					misc.setByteData(miscString);
+					misc.setName(upFile.getFileName());
+					misc.setInfo("");
+					misc.setgID(gMiscID);
+
+					dao.insertPublicMisc(misc);
+					
 					break;
 					
 				case "Please Select":
@@ -237,6 +299,9 @@ public class PublicFileUpload implements Serializable{
 	/**
 	 * 
 	 *  http://javaonlineguide.net/2016/01/how-to-display-images-in-datatable-using-pgraphicimage-in-primefaces.html
+	 *  
+	 *  I used the guide above to get the images to render, I've added my own twist but most of the work
+	 *  was taken from this
 	 *
 	 */
 	public StreamedContent getDynamicImage() throws SQLException, IOException {
@@ -281,21 +346,42 @@ public class PublicFileUpload implements Serializable{
 				
 			case "Music":
 				
-				System.out.println("Music");
+				byte[] musicByteArray = dao.getMusicBytesByGID(Integer.parseInt(id));
 				
-				break;
+				if(musicByteArray != null) {
+					
+					musicByteArray = Base64.getDecoder().decode(musicByteArray);
+					
+					InputStream dbStream = new ByteArrayInputStream(musicByteArray);
+					
+					return new DefaultStreamedContent(dbStream);
+				}
 				
 			case "Videos":
 				
-				System.out.println("Videos");
+				byte[] videoByteArray = dao.getVideosBytesByGID(Integer.parseInt(id));
 				
-				break;
+				if(videoByteArray != null) {
+					
+					videoByteArray = Base64.getDecoder().decode(videoByteArray);
+					
+					InputStream dbStream = new ByteArrayInputStream(videoByteArray);
+					
+					return new DefaultStreamedContent(dbStream);
+				}
 				
 			case "Misc":
 				
-				System.out.println("Misc");
+				byte[] miscByteArray = dao.getMiscBytesByGID(Integer.parseInt(id));
 				
-				break;
+				if(miscByteArray != null) {
+					
+					miscByteArray = Base64.getDecoder().decode(miscByteArray);
+					
+					InputStream dbStream = new ByteArrayInputStream(miscByteArray);
+					
+					return new DefaultStreamedContent(dbStream);
+				}
 				
 			case "Please Select":
 				
@@ -344,19 +430,35 @@ public class PublicFileUpload implements Serializable{
 		this.pics = pics;
 	}
 
-	public int getDyID() {
-		return dyID;
-	}
-
-	public void setDyID(int dyID) {
-		this.dyID = dyID;
-	}
-
 	public List<DocumentsDTO> getDocs() {
 		return docs;
 	}
 
 	public void setDocs(List<DocumentsDTO> docs) {
 		this.docs = docs;
+	}
+
+	public List<MusicDTO> getMusic() {
+		return music;
+	}
+
+	public void setMusic(List<MusicDTO> music) {
+		this.music = music;
+	}
+
+	public List<VideosDTO> getVideos() {
+		return videos;
+	}
+
+	public void setVideos(List<VideosDTO> videos) {
+		this.videos = videos;
+	}
+
+	public List<MiscDTO> getMisc() {
+		return misc;
+	}
+
+	public void setMisc(List<MiscDTO> misc) {
+		this.misc = misc;
 	}
 }
